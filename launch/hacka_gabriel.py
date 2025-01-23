@@ -22,23 +22,23 @@ def generate_launch_description():
 
     declared_arguments.append(
         DeclareLaunchArgument(
-            'fly_file',
-            default_value=PathJoinSubstitution([FindPackageShare('fly_mission'),
+            'hacka_file',
+            default_value=PathJoinSubstitution([FindPackageShare('hacka_gabriel'),
                                                 'params', 'fly.yaml']),
             description='Full path to the file with the all parameters.'
         )
     )
 
 #Initialize arguments
-    fly_file = LaunchConfiguration('fly_file')
+    hacka_file = LaunchConfiguration('hacka_file')
 
-    fly_lifecycle_node = LifecycleNode(
-        package='fly_mission',
-        executable='fly',
-        name='fly',
+    hacka_lifecycle_node = LifecycleNode(
+        package='hacka_gabriel',
+        executable='hacka',
+        name='hacka',
         namespace='',
         output='screen',
-        parameters=[fly_file],
+        parameters=[hacka_file],
         remappings=[
         ]
     )
@@ -49,10 +49,10 @@ def generate_launch_description():
 #Right after the node starts, make it take the 'configure' transition.
         RegisterEventHandler(
             OnProcessStart(
-                target_action=fly_lifecycle_node,
+                target_action=hacka_lifecycle_node,
                 on_start=[
                     EmitEvent(event=ChangeState(
-                        lifecycle_node_matcher=matches_action(fly_lifecycle_node),
+                        lifecycle_node_matcher=matches_action(hacka_lifecycle_node),
                         transition_id=lifecycle_msgs.msg.Transition.TRANSITION_CONFIGURE,
                     )),
                 ],
@@ -63,12 +63,12 @@ def generate_launch_description():
     event_handlers.append(
         RegisterEventHandler(
             OnStateTransition(
-                target_lifecycle_node=fly_lifecycle_node,
+                target_lifecycle_node=hacka_lifecycle_node,
                 start_state='configuring',
                 goal_state='inactive',
                 entities=[
                     EmitEvent(event=ChangeState(
-                        lifecycle_node_matcher=matches_action(fly_lifecycle_node),
+                        lifecycle_node_matcher=matches_action(hacka_lifecycle_node),
                         transition_id=lifecycle_msgs.msg.Transition.TRANSITION_ACTIVATE,
                     )),
                 ],
@@ -83,7 +83,7 @@ def generate_launch_description():
         ld.add_action(argument)
 
 #Add client node
-    ld.add_action(fly_lifecycle_node)
+    ld.add_action(hacka_lifecycle_node)
 
 #Add event handlers
     for event_handler in event_handlers:

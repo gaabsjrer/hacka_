@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(fly_mission)
+project(hacka_gabriel)
 
 if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 17)
@@ -31,13 +31,13 @@ include_directories(
   include
 )
 
-set(executable_name fly)
+set(executable_name hacka)
 
 add_executable(${executable_name}
   src/fly_main.cpp
 )
 
-set(library_name fly_core)
+set(library_name hacka_core)
 
 add_library(${library_name} SHARED
   src/fly_node.cpp
@@ -57,7 +57,7 @@ ament_target_dependencies(${library_name}
 
 target_include_directories(${library_name} PRIVATE src/include)
 
-rclcpp_components_register_nodes(${library_name} "fly_mission::FlyNode")
+rclcpp_components_register_nodes(${library_name} "hacka_gabriel::FlyNode")
 
 install(TARGETS ${library_name}
   ARCHIVE DESTINATION lib

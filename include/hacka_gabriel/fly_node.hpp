@@ -1,5 +1,5 @@
-#ifndef FLY_MISSION__FLY_NODE_HPP
-#define FLY_MISSION__FLY_NODE_HPP
+#ifndef HACKA_GABRIEL__FLY_NODE_HPP
+#define HACKA_GABRIEL__FLY_NODE_HPP
 
 #include <memory>
 #include <mutex>
@@ -12,7 +12,7 @@
 
 using CallbackReturn = rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn;
 
-namespace fly_mission
+namespace hacka_gabriel
 {
 class FlyNode : public rclcpp_lifecycle::LifecycleNode {
 public:
