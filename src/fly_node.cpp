@@ -26,6 +26,7 @@ CallbackReturn FlyNode::on_configure(const rclcpp_lifecycle::State &)
   getParameters();
   configPubSub();
   configTimers();
+  configServices();
 
   return CallbackReturn::SUCCESS;
 }
@@ -91,9 +92,9 @@ void FlyNode::configPubSub()
 {
   RCLCPP_INFO(get_logger(), "initPubSub");
 
-  pub_point_ = create_publisher<geometry_msgs::msg::Pose>("go_to_out", 1);
+  pub_point_ = create_publisher<geometry_msgs::msg::Pose>("/uav1/goto", 1);
 
-  // sub_---_ = create_subscription<--->("topic_in", 1, std::bind(&FlyNode::subFunc, this, std::placeholders::_1));
+  sub_have_goal_ = create_subscription<std_msgs::msg::Bool>("/uav1/have_goal", 1, std::bind(&FlyNode::subHaveGoal, this, std::placeholders::_1));
 }
 
 // configTimers()
@@ -104,26 +105,62 @@ void FlyNode::configTimers()
   tmr_stt_machine_ = create_wall_timer(std::chrono::duration<double>(1.0 / _rate_stt_machine_), std::bind(&FlyNode::tmrSttMachine, this), nullptr);
 }
 
-// tmrSttMachine()
-void FlyNode::tmrSttMachine()
+// configServices()
+void FlyNode::configServices()
 {
-  point_.orientation.x = 0;
-  point_.orientation.y = 0;
-  point_.orientation.z = 0;
-  point_.orientation.w = 0;
+  RCLCPP_INFO(get_logger(), "initServices");
 
-  point_.position.x = _pt2_[0];
-  point_.position.y = _pt2_[1];
-  point_.position.z = _pt2_[2];
+  client_takeoff_ = create_client<std_srvs::srv::Trigger>("/uav1/takeoff");
+  client_land_ = create_client<std_srvs::srv::Trigger>("/uav1/land");
 
-  pub_point_->publish(point_);
+  srv_start_ =
+      create_service<std_srvs::srv::Trigger>("start_state_machine", std::bind(&FlyNode::srvStartStateMachine, this, std::placeholders::_1, std::placeholders::_2));
 }
 
-// subFunc()
-// void FlyNode::subFunc(const --- &msg) 
-// {}
+// subHaveGoal()
+void FlyNode::subHaveGoal(const std_msgs::msg::Bool &msg) 
+{
+    have_goal_ = msg.data;
+}
 
-} // namespace fly_mission
+void FlyNode::srvStartStateMachine([[maybe_unused]] const std::shared_ptr<std_srvs::srv::Trigger::Request> request, std::shared_ptr<std_srvs::srv::Trigger::Response> response)
+{
+  response->success = true;
+  response->message = "starting...";
+
+  start_ = true;
+}
+
+// timrSttMachine()
+void FlyNode::tmrSttMachine()
+{
+  if(start_ ==  true)
+  {
+    point_.orientation.x = 0;
+    point_.orientation.y = 0;
+    point_.orientation.z = 0;
+    point_.orientation.w = 1;
+
+    if(state_ == "INIT" && !have_goal_)
+    {
+      auto request = std::make_shared<std_srvs::srv::Trigger::Request>();
+
+      auto callback_result = [this](rclcpp::Client<std_srvs::srv::Trigger>::SharedFuture future) -> void {
+        RCLCPP_INFO(this->get_logger(), "%s", future.get()->message.c_str());
+      };
+
+      client_takeoff_->async_send_request(request, callback_result);
+    }
+
+      // point_.position.x = _pt2_[0];
+      // point_.position.y = _pt2_[1];
+      // point_.position.z = _pt2_[2];
+
+      // pub_point_->publish(point_);
+  }
+}
+
+} // namespace hacka_gabriel
 
 #include <rclcpp_components/register_node_macro.hpp>
-RCLCPP_COMPONENTS_REGISTER_NODE(fly_mission::FlyNode)
+RCLCPP_COMPONENTS_REGISTER_NODE(hacka_gabriel::FlyNode)

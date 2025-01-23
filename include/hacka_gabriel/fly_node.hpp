@@ -7,6 +7,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_lifecycle/lifecycle_node.hpp"
 
+#include "std_msgs/msg/bool.hpp"
 #include "geometry_msgs/msg/pose.hpp"
 #include "std_srvs/srv/trigger.hpp"
 
@@ -34,12 +35,26 @@ private:
     void getParameters();
     void configPubSub();
     void configTimers();
+    void configServices();
 
+    // points publisher
     rclcpp_lifecycle::LifecyclePublisher<geometry_msgs::msg::Pose>::SharedPtr pub_point_;
 
-    // rclcpp::Subscription<--->::ConstSharedPtr sub_---_;
-    // void subFunc(const --- &msg);
+    // 'have a goal' condition subscriber
+    rclcpp::Subscription<std_msgs::msg::Bool>::ConstSharedPtr sub_have_goal_;
+    void subHaveGoal(const std_msgs::msg::Bool &msg);
 
+    // start service
+    rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr srv_start_;
+    void srvStartStateMachine(const std::shared_ptr<std_srvs::srv::Trigger::Request> request, std::shared_ptr<std_srvs::srv::Trigger::Response> response);
+
+    // client takeoff
+    rclcpp::Client<std_srvs::srv::Trigger>::SharedPtr client_takeoff_;
+
+    // client land
+    rclcpp::Client<std_srvs::srv::Trigger>::SharedPtr client_land_;
+
+    // state machine timer
     rclcpp::TimerBase::SharedPtr tmr_stt_machine_;
     void tmrSttMachine();
 
@@ -51,6 +66,8 @@ private:
 
     geometry_msgs::msg::Pose point_;
 
+    std::string state_ = "INIT";
+    bool start_{false};    
     bool have_goal_{false};
     bool is_active_{false};
 };
