@@ -1,0 +1,10 @@
+fly:
+  ros__parameters:
+    rate: # [Hz]
+      stt_machine: 0.5
+
+    waypoints: 
+      pt1: [0.0, 0.0, 2.0]
+      pt2: [0.0, 1.0, 2.0]
+      pt3: [1.0, 1.0, 2.0]
+      pt4: [1.0, 0.0, 2.0] 
