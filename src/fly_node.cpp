@@ -150,7 +150,7 @@ void FlyNode::tmrSttMachine()
 
       client_takeoff_->async_send_request(request, callback_result);
 
-      state_ == "TAKEOFF";
+      state_ = "TAKEOFF";
     }
 
     /*
