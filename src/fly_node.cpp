@@ -169,7 +169,7 @@ void FlyNode::tmrSttMachine()
       }
     }
 
-    else if(state_ == "PT1" && !have_goal){
+    else if(state_ == "PT1" && !have_goal_){
       point_.position.x = _pt2_[0];
       point_.position.y = _pt2_[1];
       point_.position.z = _pt2_[2];
@@ -179,7 +179,7 @@ void FlyNode::tmrSttMachine()
       pub_point_->publish(point_);
     }
 
-    else if(state_ == "PT2" && !have_goal){
+    else if(state_ == "PT2" && !have_goal_){
       point_.position.x = _pt3_[0];
       point_.position.y = _pt3_[1];
       point_.position.z = _pt3_[2];
@@ -189,7 +189,7 @@ void FlyNode::tmrSttMachine()
       pub_point_->publish(point_);
     }
 
-    else if(state_ == "PT3" && !have_goal){
+    else if(state_ == "PT3" && !have_goal_){
       point_.position.x = _pt4_[0];
       point_.position.y = _pt4_[1];
       point_.position.z = _pt4_[2];
