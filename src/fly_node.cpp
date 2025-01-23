@@ -7,7 +7,7 @@ FlyNode::FlyNode(const rclcpp::NodeOptions &options) : rclcpp_lifecycle::Lifecyc
 {
   RCLCPP_INFO(get_logger(), "Creating");
 
-  declare_parameter("rate.stt_machine", rclcpp::ParameterValue(1.0));
+  declare_parameter("rate.stt_machine", rclcpp::ParameterValue(0.2));
   declare_parameter("waypoints.pt1", std::vector<double>(3, 0.0));
   declare_parameter("waypoints.pt2", std::vector<double>(3, 0.0));
   declare_parameter("waypoints.pt3", std::vector<double>(3, 0.0));
@@ -163,13 +163,12 @@ void FlyNode::tmrSttMachine()
         point_.position.y = _pt1_[1];
         point_.position.z = _pt1_[2];
 
-        state_ = "PT1";
-
         pub_point_->publish(point_);
+
+        state_ = "PT1";
       }
     }
 
-    /*
     else if(state_ == "PT1" && !have_goal){
       point_.position.x = _pt2_[0];
       point_.position.y = _pt2_[1];
@@ -199,9 +198,8 @@ void FlyNode::tmrSttMachine()
 
       pub_point_->publish(point_);
     }
-    
 
-    else if(state_ == "TAKEOFF")
+    else if(state_ == "PT4")
     { 
       if(have_goal_ == false)
       {
@@ -213,7 +211,7 @@ void FlyNode::tmrSttMachine()
 
         client_land_->async_send_request(request, callback_result);
       }
-    }*/
+    }
   }
 }
 
