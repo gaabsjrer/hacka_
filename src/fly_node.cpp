@@ -145,7 +145,7 @@ void FlyNode::tmrSttMachine()
 
     if(state_ == "INIT")
     {  
-      else if(state_ == "TAKEOFF")
+      if(have_goal_ == false)
       {
         auto request = std::make_shared<std_srvs::srv::Trigger::Request>();
 
