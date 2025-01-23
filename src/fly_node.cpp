@@ -144,16 +144,19 @@ void FlyNode::tmrSttMachine()
     point_.orientation.w = 1;
 
     if(state_ == "INIT")
-    {     
-      auto request = std::make_shared<std_srvs::srv::Trigger::Request>();
+    {  
+      else if(state_ == "TAKEOFF")
+      {
+        auto request = std::make_shared<std_srvs::srv::Trigger::Request>();
 
-      auto callback_result = [this](rclcpp::Client<std_srvs::srv::Trigger>::SharedFuture future) -> void {
-        RCLCPP_INFO(this->get_logger(), "%s", future.get()->message.c_str());
-      };
+        auto callback_result = [this](rclcpp::Client<std_srvs::srv::Trigger>::SharedFuture future) -> void {
+          RCLCPP_INFO(this->get_logger(), "%s", future.get()->message.c_str());
+        };
 
-      client_takeoff_->async_send_request(request, callback_result);
+        client_takeoff_->async_send_request(request, callback_result);
 
-      state_ = "TAKEOFF";
+        state_ = "TAKEOFF";
+      }
     }
 
     /*
