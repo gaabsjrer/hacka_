@@ -143,10 +143,8 @@ void FlyNode::tmrSttMachine()
     point_.orientation.z = 0;
     point_.orientation.w = 1;
 
-    if(state_ == "INIT")
-    {  
-      if(have_goal_ == false)
-      {
+    if(state_ == "INIT"){  
+      if(have_goal_ == false){
         auto request = std::make_shared<std_srvs::srv::Trigger::Request>();
 
         auto callback_result = [this](rclcpp::Client<std_srvs::srv::Trigger>::SharedFuture future) -> void {
@@ -159,17 +157,19 @@ void FlyNode::tmrSttMachine()
       }
     }
 
-    /*
-    else if(state_ == "TAKEOFF" && !have_goal){
-      point_.position.x = _pt1_[0];
-      point_.position.y = _pt1_[1];
-      point_.position.z = _pt1_[2];
+    else if(state_ == "TAKEOFF"){ 
+      if(have_goal_ = false){
+        point_.position.x = _pt1_[0];
+        point_.position.y = _pt1_[1];
+        point_.position.z = _pt1_[2];
 
-      state_ = "PT1";
+        state_ = "PT1";
 
-      pub_point_->publish(point_);
+        pub_point_->publish(point_);
+      }
     }
 
+    /*
     else if(state_ == "PT1" && !have_goal){
       point_.position.x = _pt2_[0];
       point_.position.y = _pt2_[1];
@@ -199,7 +199,7 @@ void FlyNode::tmrSttMachine()
 
       pub_point_->publish(point_);
     }
-    */
+    
 
     else if(state_ == "TAKEOFF")
     { 
@@ -213,13 +213,7 @@ void FlyNode::tmrSttMachine()
 
         client_land_->async_send_request(request, callback_result);
       }
-    }
-
-      // point_.position.x = _pt2_[0];
-      // point_.position.y = _pt2_[1];
-      // point_.position.z = _pt2_[2];
-
-      // pub_point_->publish(point_);
+    }*/
   }
 }
 
