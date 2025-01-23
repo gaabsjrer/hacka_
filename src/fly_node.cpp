@@ -121,6 +121,8 @@ void FlyNode::configServices()
 void FlyNode::subHaveGoal(const std_msgs::msg::Bool &msg) 
 {
     have_goal_ = msg.data;
+    RCLCPP_INFO(get_logger(), "Received have_goal: %s", have_goal_ ? "true" : "false");
+
 }
 
 void FlyNode::srvStartStateMachine([[maybe_unused]] const std::shared_ptr<std_srvs::srv::Trigger::Request> request, std::shared_ptr<std_srvs::srv::Trigger::Response> response)
@@ -141,7 +143,8 @@ void FlyNode::tmrSttMachine()
     point_.orientation.z = 0;
     point_.orientation.w = 1;
 
-    if(state_ == "INIT" && !have_goal_){
+    if(state_ == "INIT")
+    {     
       auto request = std::make_shared<std_srvs::srv::Trigger::Request>();
 
       auto callback_result = [this](rclcpp::Client<std_srvs::srv::Trigger>::SharedFuture future) -> void {
@@ -194,15 +197,19 @@ void FlyNode::tmrSttMachine()
       pub_point_->publish(point_);
     }
     */
-  
-    else if(state_ == "TAKEOFF" && !have_goal_){
-      auto request = std::make_shared<std_srvs::srv::Trigger::Request>();
 
-      auto callback_result = [this](rclcpp::Client<std_srvs::srv::Trigger>::SharedFuture future) -> void {
-        RCLCPP_INFO(this->get_logger(), "%s", future.get()->message.c_str());
-      };
+    else if(state_ == "TAKEOFF")
+    { 
+      if(have_goal_ == false)
+      {
+        auto request = std::make_shared<std_srvs::srv::Trigger::Request>();
 
-      client_land_->async_send_request(request, callback_result);
+        auto callback_result = [this](rclcpp::Client<std_srvs::srv::Trigger>::SharedFuture future) -> void {
+          RCLCPP_INFO(this->get_logger(), "%s", future.get()->message.c_str());
+        };
+
+        client_land_->async_send_request(request, callback_result);
+      }
     }
 
       // point_.position.x = _pt2_[0];

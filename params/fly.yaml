@@ -1,7 +1,7 @@
 fly:
   ros__parameters:
     rate: # [Hz]
-      stt_machine: 0.5
+      stt_machine: 0.2
 
     waypoints: 
       pt1: [2.0, 0.0, 2.0]
