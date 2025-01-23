@@ -158,7 +158,7 @@ void FlyNode::tmrSttMachine()
     }
 
     else if(state_ == "TAKEOFF"){ 
-      if(have_goal_ = false){
+      if(have_goal_ == false){
         point_.position.x = _pt1_[0];
         point_.position.y = _pt1_[1];
         point_.position.z = _pt1_[2];
